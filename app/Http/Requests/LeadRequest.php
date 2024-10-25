@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Http;
@@ -13,8 +14,8 @@ class LeadRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // return $this->user() != null && $this->user()->role_id == 2;
-        return true;
+        return $this->user() != null && ($this->user()->role_id == Role::CUSTOMER_SERVICE || $this->user()->role_id == Role::SUPER_ADMIN);
+        // return true;
     }
 
     /**

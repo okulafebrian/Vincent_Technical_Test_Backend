@@ -10,6 +10,7 @@ use App\Http\Resources\ProposalResource;
 use App\Models\Lead;
 use App\Models\Proposal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProposalController extends Controller
 {
@@ -23,7 +24,7 @@ class ProposalController extends Controller
     public function store(ProposalRequest $request, Lead $lead)
     {
         $proposal = $lead->proposal()->create([
-            'notes' => $request->notes
+            'creator_id' => Auth::id(),
         ]);
 
         $proposal->refresh();
@@ -34,7 +35,8 @@ class ProposalController extends Controller
     public function updateStatus(Request $request, Lead $lead, Proposal $proposal, CreateClientAccount $createClientAccount)
     {
         $request->validate([
-            'status' => ['required']
+            'status' => ['required'],
+            'editor_id' => Auth::id(),
         ]);
 
         $proposal->update(['status' => $request->status]);

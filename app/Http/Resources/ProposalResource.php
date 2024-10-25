@@ -15,7 +15,6 @@ class ProposalResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'notes' => $this->notes,
             'status' => $this->status->getLabelText()
         ];
     }

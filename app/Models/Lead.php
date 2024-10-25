@@ -29,7 +29,17 @@ class Lead extends Model
         return $this->hasOne(Proposal::class);
     }
 
-    public function assignee(): BelongsTo
+    public function salesperson(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function editor(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

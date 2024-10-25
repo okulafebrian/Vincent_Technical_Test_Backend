@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('email');
             $table->string('phone', 20);
             $table->unsignedInteger('status')->default(LeadStatus::NEW);
-            $table->foreignId('assignee_id')->constrained('users');
+            $table->foreignId('salesperson_id')->constrained('users');
+            $table->foreignId('editor_id')->nullable()->constrained('users');
+            $table->foreignId('creator_id')->constrained('users');
             $table->timestamps();
         });
     }

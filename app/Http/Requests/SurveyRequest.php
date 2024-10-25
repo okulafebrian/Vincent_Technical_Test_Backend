@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SurveyRequest extends FormRequest
@@ -11,8 +12,8 @@ class SurveyRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // return $this->user() != null && $this->user()->role_id == 3;
-        return true;
+        return $this->user() != null && ($this->user()->role_id == Role::SALESPERSON || $this->user()->role_id == Role::SUPER_ADMIN);
+        // return true;
     }
 
     /**
@@ -24,6 +25,7 @@ class SurveyRequest extends FormRequest
     {
         return [
             'notes' => ['required', 'max:200'],
+            'image' => ['required', 'image:jpeg,png,jpg,gif,svg', 'max:2048']
         ];
     }
 }

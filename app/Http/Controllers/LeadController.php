@@ -7,8 +7,10 @@ use App\Http\Requests\LeadRequest;
 use App\Http\Resources\LeadResource;
 use App\Models\Lead;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LeadController extends Controller
 {
@@ -25,7 +27,8 @@ class LeadController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'assignee_id' => $assignLead->execute()
+            'salesperson_id' => $assignLead->execute(),
+            'creator_id' => Auth::id()
         ]);
 
         $lead->refresh();
@@ -39,30 +42,51 @@ class LeadController extends Controller
             'status' => ['required']
         ]);
 
-        $lead->update(['status' => $request->status]);
+        $lead->update([
+            'status' => $request->status,
+            'editor_id' => Auth::id(),
+        ]);
 
         return (LeadResource::make($lead))->response()->setStatusCode(201);
     }
 
-    public function updateAssignee(Request $request, Lead $lead)
+    public function updateSalesperson(Request $request, Lead $lead)
     {
         $request->validate([
-            'assignee_id' => ['required']
+            'salesperson_id' => ['required'],
         ]);
 
-        $assignee = User::find($request->assignee_id);
+        $salesperson = User::find($request->salesperson_id);
 
-        if (!$assignee) {
+        if (!$salesperson) {
             throw new HttpResponseException(response()->json([
                 'errors' => [
                     'message' => [
-                        'Assignee not found'
+                        'Salesperson not found'
                     ]
                 ]
             ])->setStatusCode(404));
         }
 
-        $lead->update(['assignee_id' => $request->assignee_id]);
+        $hasActivePenalty = $salesperson->salespersonPenalties()
+            ->where('start', '<=', Carbon::now())
+            ->where('end', '>=', Carbon::now())
+            ->exists();
+
+        if ($hasActivePenalty) {
+            throw new HttpResponseException(response()->json([
+                'errors' => [
+                    'message' => [
+                        'Salesperson has penalty'
+                    ]
+                ]
+            ])->setStatusCode(404));
+        }
+
+        $lead->update([
+            'salesperson_id' => $request->salesperson_id,
+            'editor_id' => Auth::id(),
+        ]);
 
         return (LeadResource::make($lead))->response()->setStatusCode(201);
     }

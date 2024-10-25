@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\LeadStatus;
 use App\Models\User;
 
 test('users can create new lead', function () {
@@ -13,17 +14,17 @@ test('users can create new lead', function () {
     $this->post(
         '/api/leads',
         [
+            'name' => 'Mr Test',
             'email' => 'test@example.com',
             'phone' => '082212341234',
         ],
-        [
-            'Authorization' => 'test'
-        ]
     )->assertStatus(201)
         ->assertJson([
             'data' => [
+                'name' => 'Mr Test',
                 'email' => 'test@example.com',
                 'phone' => '082212341234',
+                'status' => LeadStatus::NEW->getLabelText()
             ]
         ]);
 });

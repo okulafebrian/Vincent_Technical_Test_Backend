@@ -16,6 +16,7 @@ class SurveyResource extends JsonResource
     {
         return [
             'notes' => $this->notes,
+            'image' => $this->image,
             'status' => $this->status->getLabelText()
         ];
     }

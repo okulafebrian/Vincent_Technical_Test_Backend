@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProposalRequest extends FormRequest
@@ -11,8 +12,8 @@ class ProposalRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // return $this->user() != null && $this->user()->role_id == 2;
-        return true;
+        return $this->user() != null && ($this->user()->role_id == Role::OPERATIONAL || $this->user()->role_id == Role::SUPER_ADMIN);
+        // return true;
     }
 
     /**
@@ -22,8 +23,6 @@ class ProposalRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'notes' => ['required', 'max:200'],
-        ];
+        return [];
     }
 }

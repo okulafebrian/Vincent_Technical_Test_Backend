@@ -10,6 +10,7 @@ use App\Models\Lead;
 use App\Models\Survey;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SurveyController extends Controller
 {
@@ -22,8 +23,14 @@ class SurveyController extends Controller
 
     public function store(SurveyRequest $request, Lead $lead)
     {
+        if ($request->file('image')) {
+            $image = $request->file('image')->store('attachments');
+        }
+
         $survey = $lead->surveys()->create([
-            'notes' => $request->notes
+            'notes' => $request->notes,
+            'image' => $image ?? null,
+            'creator_id' => Auth::id(),
         ]);
 
         $survey->refresh();
@@ -34,7 +41,8 @@ class SurveyController extends Controller
     public function updateStatus(Request $request, Lead $lead, Survey $survey)
     {
         $request->validate([
-            'status' => ['required']
+            'status' => ['required'],
+            'editor_id' => Auth::id(),
         ]);
 
         $survey->update(['status' => $request->status]);

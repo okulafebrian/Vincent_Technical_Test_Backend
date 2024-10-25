@@ -15,8 +15,9 @@ return new class extends Migration
         Schema::create('proposals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('lead_id')->constrained();
-            $table->text('notes');
             $table->unsignedInteger('status')->default(ProposalStatus::NEW);
+            $table->foreignId('editor_id')->nullable()->constrained('users');
+            $table->foreignId('creator_id')->constrained('users');
             $table->timestamps();
         });
     }

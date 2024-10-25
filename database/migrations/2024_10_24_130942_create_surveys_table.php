@@ -16,7 +16,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('lead_id')->constrained();
             $table->text('notes');
+            $table->string('image');
             $table->unsignedInteger('status')->default(SurveyStatus::NEW);
+            $table->foreignId('editor_id')->nullable()->constrained('users');
+            $table->foreignId('creator_id')->constrained('users');
             $table->timestamps();
         });
     }
