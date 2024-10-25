@@ -42,13 +42,18 @@ class SurveyController extends Controller
     {
         $request->validate([
             'status' => ['required'],
+        ]);
+
+        $survey->update([
+            'status' => $request->status,
             'editor_id' => Auth::id(),
         ]);
 
-        $survey->update(['status' => $request->status]);
-
         if ($request->status == SurveyStatus::ACCEPTED->value) {
-            $lead->update(['status' => LeadStatus::PROPOSAL]);
+            $lead->update([
+                'status' => LeadStatus::PROPOSAL,
+                'editor_id' => Auth::id(),
+            ]);
         }
 
         return (SurveyResource::make($survey))->response()->setStatusCode(201);

@@ -36,12 +36,17 @@ class ProposalController extends Controller
     {
         $request->validate([
             'status' => ['required'],
+        ]);
+
+        $proposal->update([
+            'status' => $request->status,
             'editor_id' => Auth::id(),
         ]);
 
-        $proposal->update(['status' => $request->status]);
-
-        $lead->update(['status' => LeadStatus::CLOSED]);
+        $lead->update([
+            'status' => LeadStatus::CLOSED,
+            'editor_id' => Auth::id(),
+        ]);
 
         if ($request->status == ProposalStatus::ACCEPTED->value) {
             $createClientAccount->execute($lead);

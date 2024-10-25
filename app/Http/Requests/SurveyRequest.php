@@ -12,7 +12,7 @@ class SurveyRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user() != null && ($this->user()->role_id == Role::SALESPERSON || $this->user()->role_id == Role::SUPER_ADMIN);
+        return $this->user() != null && ($this->user()->role_id == Role::OPERATIONAL || $this->user()->role_id == Role::SUPER_ADMIN);
         // return true;
     }
 

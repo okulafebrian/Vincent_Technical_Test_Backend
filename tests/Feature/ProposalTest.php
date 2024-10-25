@@ -13,6 +13,15 @@ test('users can create new proposal', function () {
     ]);
 
     $this->post(
+        '/api/leads',
+        [
+            'name' => 'Mr Test',
+            'email' => 'test@example.com',
+            'phone' => '082212341234',
+        ],
+    );
+
+    $this->post(
         '/api/leads/1/proposals',
         [],
     )->assertStatus(201)
